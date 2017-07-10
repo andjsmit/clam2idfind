@@ -8,4 +8,4 @@ Two options are availabe:
 
 Files will be listed unless a destination is given.
 
-Script expects `clamscan` to be run with the setting `--detect-structured=yes`.
+Script expects `clamscan` to include the setting `--detect-structured=yes`.
