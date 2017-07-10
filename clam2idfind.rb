@@ -26,11 +26,16 @@ end
 
 def copy_files(files, destination)
   # Copy given file to destination
+  # Return number of files copied
+  copy_count = 0
   files.each do |filename|
     shellname = Shellwords.shellescape filename.strip
     cmd = "cp #{shellname} #{destination}"
-    `#{cmd}`
+    if `#{cmd}`
+      ++copy_count
+    end
   end
+  copy_count
 end
 
 # Main Program
@@ -64,17 +69,23 @@ end.parse!
 if options[:previous] && options[:current]
   files = diff_files(options[:previous], options[:current])
   if options[:destination]
-    copy_files(files, options[:destination])
+    count = copy_files(files, options[:destination])
+    puts "#{files.count} files found."
+    puts "#{count} file copied."
   else
     list_files(files)
+    puts "#{files.count} files found."
   end
 elsif options[:current]
   files = current_files(options[:current])
   current_files(options[:current])
   if options[:destination]
     copy_files(files, options[:destination])
+    puts "#{files.count} files found."
+    puts "#{count} file copied."
   else
     list_files(files)
+    puts "#{files.count} files found."
   end
 else
   puts "No files given. See --help for details."
