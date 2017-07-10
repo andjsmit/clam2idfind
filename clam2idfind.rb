@@ -31,7 +31,7 @@ def copy_files(files, destination)
   files.each do |filename|
     shellname = Shellwords.shellescape filename.strip
     cmd = "cp #{shellname} #{destination}"
-    if `#{cmd}`
+    if `#{cmd}` == 0
       ++copy_count
     end
   end
@@ -80,9 +80,9 @@ elsif options[:current]
   files = current_files(options[:current])
   current_files(options[:current])
   if options[:destination]
-    copy_files(files, options[:destination])
+    count = copy_files(files, options[:destination])
     puts "#{files.count} files found."
-    puts "#{count} file copied."
+    puts "#{count} files copied."
   else
     list_files(files)
     puts "#{files.count} files found."
