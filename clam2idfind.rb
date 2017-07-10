@@ -30,16 +30,13 @@ def copy_files(files, destination)
   copy_count = 0
   files.each do |filename|
     shellname = Shellwords.shellescape filename.strip
-    cmd = "cp #{shellname} #{destination}"
-    `#{cmd}`
-    if $?.exitstatus == 0
-      ++copy_count
-    end
+    `cp #{shellname} #{destination}`
+    copy_count += 1 if $?.success?
   end
   copy_count
 end
 
-# Main Program
+# Options
 
 options = {}
 
@@ -65,29 +62,23 @@ OptionParser.new do |parser|
 
 end.parse!
 
-#puts "old file = #{options[:previous]}. New file = #{options[:current]}"
+# Main Program
 
+files = Array.new
 if options[:previous] && options[:current]
   files = diff_files(options[:previous], options[:current])
-  if options[:destination]
-    count = copy_files(files, options[:destination])
-    puts "#{files.count} files found."
-    puts "#{count} files copied."
-  else
-    list_files(files)
-    puts "#{files.count} files found."
-  end
 elsif options[:current]
   files = current_files(options[:current])
-  current_files(options[:current])
-  if options[:destination]
-    count = copy_files(files, options[:destination])
-    puts "#{files.count} files found."
-    puts "#{count} files copied."
-  else
-    list_files(files)
-    puts "#{files.count} files found."
-  end
 else
   puts "No files given. See --help for details."
+  exit
+end
+
+if options[:destination]
+  puts "#{files.count} files found."
+  count = copy_files(files, options[:destination])
+  puts "#{count} files copied."
+else
+  list_files(files)
+  puts "#{files.count} files found."
 end
