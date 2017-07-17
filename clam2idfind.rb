@@ -65,10 +65,33 @@ end.parse!
 # Main Program
 
 files = Array.new
+list_head = ''
+list_idfind   = "\n\n***************\n"
+list_idfind  += "Identity Finder\n"
+list_idfind  += "***************\n\n"
+list_idfind  += "Files scanned with Identity Finder (yes/no) ?\n\n"
+list_idfind  += "Files scanned with Identity Finder\n"
+list_idfind  += "that tested positive for senestive Data\n"
+list_idfind  += "***************************************\n\n"
+list_idfind  += "None\n\n"
+list_idfind  += "Files that did contianed Sensitive Data\n"
+list_idfind  += "***************************************\n\n"
+list_idfind  += "None\n\n"
+list_idfind  += "Actions taken\n"
+list_idfind  += "*************\n\n"
+list_idfind  += "None\n\n"
+
 if options[:previous] && options[:current]
   files = diff_files(options[:previous], options[:current])
+  list_head  = "ClamAV DLP Scan New files between:\n"
+  list_head += "**********************************\n"
+  list_head += "Previous : #{options[:previous]}\n"
+  list_head += "Current  : #{options[:current]}\n\n\n"
 elsif options[:current]
   files = current_files(options[:current])
+  list_head  = "ClamAV DLP Scan for file:\n"
+  list_head += "*************************\n"
+  list_head += "File: #{options[:current]}\n\n\n"
 else
   puts "No files given. See --help for details."
   exit
@@ -79,6 +102,8 @@ if options[:destination]
   count = copy_files(files, options[:destination])
   puts "#{count} files copied."
 else
+  puts list_head
   list_files(files)
   puts "#{files.count} files found."
+  puts list_idfind
 end
